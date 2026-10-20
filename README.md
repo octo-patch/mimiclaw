@@ -40,7 +40,7 @@ You send a message on Telegram. The ESP32-S3 picks it up over WiFi, feeds it int
 - An **ESP32-S3 dev board** with 16 MB flash and 8 MB PSRAM (e.g. Xiaozhi AI board, ~$10)
 - A **USB Type-C cable**
 - A **Telegram bot token** — talk to [@BotFather](https://t.me/BotFather) on Telegram to create one
-- An **Anthropic API key** — from [console.anthropic.com](https://console.anthropic.com), an **OpenAI API key** — from [platform.openai.com](https://platform.openai.com), or a **MiniMax API key** — from [platform.minimax.io](https://platform.minimax.io) (global) or [platform.minimaxi.com](https://platform.minimaxi.com) (China); MiniMax exposes an OpenAI-compatible endpoint, default model `MiniMax-M3` (`MiniMax-M2.7` also available)
+- An **Anthropic API key** — from [console.anthropic.com](https://console.anthropic.com), an **OpenAI API key** — from [platform.openai.com](https://platform.openai.com), or a **MiniMax API key** — from [platform.minimax.io](https://platform.minimax.io) (global) or [platform.minimaxi.com](https://platform.minimaxi.com) (China); MiniMax exposes an OpenAI-compatible endpoint, default model `MiniMax-M3.1-Flash` (`MiniMax-M3` also available)
 
 ### Install
 
@@ -171,7 +171,7 @@ mimi> set_tg_token 123456:ABC...   # change Telegram bot token
 mimi> set_api_key sk-ant-api03-... # change API key (Anthropic or OpenAI)
 mimi> set_model_provider openai    # switch provider (anthropic|openai|minimax)
 mimi> set_model gpt-4o             # change LLM model
-mimi> set_model MiniMax-M3         # MiniMax default (also: MiniMax-M2.7)
+mimi> set_model MiniMax-M3.1-Flash # MiniMax default (also: MiniMax-M3)
 mimi> set_minimax_region cn_zh     # MiniMax region (global_en|cn_zh)
 mimi> set_proxy 127.0.0.1 7897  # set HTTP proxy
 mimi> clear_proxy                  # remove proxy
@@ -180,6 +180,12 @@ mimi> set_tavily_key tvly-...      # set Tavily API key (preferred)
 mimi> config_show                  # show all config (masked)
 mimi> config_reset                 # clear NVS, revert to build-time defaults
 ```
+
+Selecting MiniMax without an explicit model uses `MiniMax-M3.1-Flash`.
+Build-time and saved model IDs remain unchanged; use `set_model MiniMax-M3`
+for the alternative, or keep an explicitly configured custom or legacy ID.
+MiniMax tool turns retain the complete assistant message, including reasoning.
+The API's default thinking settings are used.
 
 **Debug & maintenance:**
 

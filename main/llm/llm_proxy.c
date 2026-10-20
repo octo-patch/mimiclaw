@@ -21,6 +21,7 @@ static const char *TAG = "llm";
 
 static char s_api_key[LLM_API_KEY_MAX_LEN] = {0};
 static char s_model[LLM_MODEL_MAX_LEN] = MIMI_LLM_DEFAULT_MODEL;
+static bool s_model_configured = false;
 static char s_provider[16] = MIMI_LLM_PROVIDER_DEFAULT;
 static char s_minimax_region[LLM_REGION_MAX_LEN] = MIMI_MINIMAX_REGION_DEFAULT;
 
@@ -202,7 +203,7 @@ static bool provider_is_openai_compat(void)
 }
 
 /* MiniMax is reachable through two regional endpoints selected at runtime:
- * "global_en" (api.minimax.io) and "cn_zh" (api.minimaxi.com). Any value other
+ * "global_en" (api.minimax.io) and "cn_zh" (api.minimax.cn). Any value other
  * than "cn_zh" falls back to the global endpoint. */
 static bool minimax_region_is_cn(void)
 {
@@ -237,7 +238,7 @@ static const char *llm_api_path(void)
 
 esp_err_t llm_proxy_init(void)
 {
-    bool model_configured = false;
+    s_model_configured = false;
 
     /* Start with build-time defaults */
     if (MIMI_SECRET_API_KEY[0] != '\0') {
@@ -245,7 +246,7 @@ esp_err_t llm_proxy_init(void)
     }
     if (MIMI_SECRET_MODEL[0] != '\0') {
         safe_copy(s_model, sizeof(s_model), MIMI_SECRET_MODEL);
-        model_configured = true;
+        s_model_configured = true;
     }
     if (MIMI_SECRET_MODEL_PROVIDER[0] != '\0') {
         safe_copy(s_provider, sizeof(s_provider), MIMI_SECRET_MODEL_PROVIDER);
@@ -266,7 +267,7 @@ esp_err_t llm_proxy_init(void)
         len = sizeof(model_tmp);
         if (nvs_get_str(nvs, MIMI_NVS_KEY_MODEL, model_tmp, &len) == ESP_OK && model_tmp[0]) {
             safe_copy(s_model, sizeof(s_model), model_tmp);
-            model_configured = true;
+            s_model_configured = true;
         }
         char provider_tmp[16] = {0};
         len = sizeof(provider_tmp);
@@ -281,7 +282,7 @@ esp_err_t llm_proxy_init(void)
         nvs_close(nvs);
     }
 
-    if (!model_configured && provider_is_minimax()) {
+    if (!s_model_configured && provider_is_minimax()) {
         safe_copy(s_model, sizeof(s_model), MIMI_MINIMAX_DEFAULT_MODEL);
     }
 
@@ -467,6 +468,13 @@ static cJSON *convert_messages_openai(const char *system_prompt, cJSON *messages
         cJSON *content = cJSON_GetObjectItem(msg, "content");
         if (!role || !cJSON_IsString(role)) continue;
 
+        /* Keep MiniMax reasoning and tool calls intact between tool turns. */
+        if (provider_is_minimax() && strcmp(role->valuestring, "assistant") == 0 &&
+            (cJSON_GetObjectItem(msg, "tool_calls") || cJSON_GetObjectItem(msg, "reasoning_content"))) {
+            cJSON_AddItemToArray(out, cJSON_Duplicate(msg, 1));
+            continue;
+        }
+
         if (content && cJSON_IsString(content)) {
             cJSON *m = cJSON_CreateObject();
             cJSON_AddStringToObject(m, "role", role->valuestring);
@@ -588,6 +596,8 @@ static cJSON *convert_messages_openai(const char *system_prompt, cJSON *messages
 
 void llm_response_free(llm_response_t *resp)
 {
+    cJSON_Delete(resp->assistant_message);
+    resp->assistant_message = NULL;
     free(resp->text);
     resp->text = NULL;
     resp->text_len = 0;
@@ -698,6 +708,13 @@ esp_err_t llm_chat_tools(const char *system_prompt,
 
             cJSON *message = cJSON_GetObjectItem(choice0, "message");
             if (message) {
+                if (provider_is_minimax()) {
+                    resp->assistant_message = cJSON_Duplicate(message, 1);
+                    if (!resp->assistant_message) {
+                        cJSON_Delete(root);
+                        return ESP_ERR_NO_MEM;
+                    }
+                }
                 cJSON *content = cJSON_GetObjectItem(message, "content");
                 if (content && cJSON_IsString(content)) {
                     size_t tlen = strlen(content->valuestring);
@@ -845,6 +862,7 @@ esp_err_t llm_set_model(const char *model)
     nvs_close(nvs);
 
     safe_copy(s_model, sizeof(s_model), model);
+    s_model_configured = true;
     ESP_LOGI(TAG, "Model set to: %s", s_model);
     return ESP_OK;
 }
@@ -857,7 +875,12 @@ esp_err_t llm_set_provider(const char *provider)
     ESP_ERROR_CHECK(nvs_commit(nvs));
     nvs_close(nvs);
 
+    bool was_minimax = provider_is_minimax();
     safe_copy(s_provider, sizeof(s_provider), provider);
+    if (!s_model_configured && (provider_is_minimax() || was_minimax)) {
+        safe_copy(s_model, sizeof(s_model), provider_is_minimax()
+                  ? MIMI_MINIMAX_DEFAULT_MODEL : MIMI_LLM_DEFAULT_MODEL);
+    }
     ESP_LOGI(TAG, "Provider set to: %s", s_provider);
     return ESP_OK;
 }

@@ -254,9 +254,15 @@ static void agent_loop_task(void *arg)
             ESP_LOGI(TAG, "Tool use iteration %d: %d calls", iteration + 1, resp.call_count);
 
             /* Append assistant message with content array */
-            cJSON *asst_msg = cJSON_CreateObject();
-            cJSON_AddStringToObject(asst_msg, "role", "assistant");
-            cJSON_AddItemToObject(asst_msg, "content", build_assistant_content(&resp));
+            cJSON *asst_msg;
+            if (resp.assistant_message) {
+                asst_msg = resp.assistant_message;
+                resp.assistant_message = NULL;
+            } else {
+                asst_msg = cJSON_CreateObject();
+                cJSON_AddStringToObject(asst_msg, "role", "assistant");
+                cJSON_AddItemToObject(asst_msg, "content", build_assistant_content(&resp));
+            }
             cJSON_AddItemToArray(messages, asst_msg);
 
             /* Execute tools and append results */

@@ -29,7 +29,7 @@ esp_err_t llm_set_model(const char *model);
 
 /**
  * Save the MiniMax region to NVS. ("global_en" -> api.minimax.io,
- * "cn_zh" -> api.minimaxi.com). Only affects the MiniMax provider.
+ * "cn_zh" -> api.minimax.cn). Only affects the MiniMax provider.
  */
 esp_err_t llm_set_minimax_region(const char *region);
 
@@ -43,6 +43,7 @@ typedef struct {
 } llm_tool_call_t;
 
 typedef struct {
+    cJSON *assistant_message;                    /* complete MiniMax tool-turn history */
     char *text;                                  /* accumulated text blocks */
     size_t text_len;
     llm_tool_call_t calls[MIMI_MAX_TOOL_CALLS];

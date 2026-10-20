@@ -40,7 +40,7 @@ MimiClaw 把一块小小的 ESP32-S3 开发板变成你的私人 AI 助理。插
 - 一块 **ESP32-S3 开发板**，16MB Flash + 8MB PSRAM（如小智 AI 开发板，~¥30）
 - 一根 **USB Type-C 数据线**
 - 一个 **Telegram Bot Token** — 在 Telegram 找 [@BotFather](https://t.me/BotFather) 创建
-- 一个 **Anthropic API Key** — 从 [console.anthropic.com](https://console.anthropic.com) 获取，一个 **OpenAI API Key** — 从 [platform.openai.com](https://platform.openai.com) 获取，或一个 **MiniMax API Key** — 从 [platform.minimax.io](https://platform.minimax.io)（全球）或 [platform.minimaxi.com](https://platform.minimaxi.com)（中国）获取；MiniMax 提供 OpenAI 兼容接口，默认模型 `MiniMax-M3`（另有 `MiniMax-M2.7` 可选）
+- An **Anthropic API key** — from [console.anthropic.com](https://console.anthropic.com), an **OpenAI API key** — from [platform.openai.com](https://platform.openai.com), or a **MiniMax API key** — from [platform.minimax.io](https://platform.minimax.io) (global) or [platform.minimaxi.com](https://platform.minimaxi.com) (China); MiniMax exposes an OpenAI-compatible endpoint, default model `MiniMax-M3.1-Flash` (`MiniMax-M3` also available)
 
 ### 安装
 
@@ -186,7 +186,7 @@ mimi> set_tg_token 123456:ABC...   # 换 Telegram Bot Token
 mimi> set_api_key sk-ant-api03-... # 换 API Key（Anthropic 或 OpenAI）
 mimi> set_model_provider openai    # 切换提供商（anthropic|openai|minimax）
 mimi> set_model gpt-4o             # 换模型
-mimi> set_model MiniMax-M3         # MiniMax 默认模型（也支持 MiniMax-M2.7）
+mimi> set_model MiniMax-M3.1-Flash # MiniMax default (also: MiniMax-M3)
 mimi> set_minimax_region cn_zh     # MiniMax 区域（global_en|cn_zh）
 mimi> set_proxy 192.168.1.83 7897  # 设置代理
 mimi> clear_proxy                  # 清除代理

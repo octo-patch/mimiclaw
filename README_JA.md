@@ -40,7 +40,7 @@ Telegramでメッセージを送ると、ESP32-S3がWiFi経由で受信し、エ
 - **ESP32-S3開発ボード**（16MB Flash + 8MB PSRAM搭載、例：小智AIボード、約$10）
 - **USB Type-Cケーブル**
 - **Telegram Botトークン** — Telegramで[@BotFather](https://t.me/BotFather)に話しかけて作成
-- **Anthropic APIキー** — [console.anthropic.com](https://console.anthropic.com)から取得、**OpenAI APIキー** — [platform.openai.com](https://platform.openai.com)から取得、または **MiniMax APIキー** — [platform.minimax.io](https://platform.minimax.io)（グローバル）/ [platform.minimaxi.com](https://platform.minimaxi.com)（中国）から取得（MiniMaxはOpenAI互換エンドポイントを提供。デフォルトモデルは `MiniMax-M3`、`MiniMax-M2.7` も選択可能）
+- An **Anthropic API key** — from [console.anthropic.com](https://console.anthropic.com), an **OpenAI API key** — from [platform.openai.com](https://platform.openai.com), or a **MiniMax API key** — from [platform.minimax.io](https://platform.minimax.io) (global) or [platform.minimaxi.com](https://platform.minimaxi.com) (China); MiniMax exposes an OpenAI-compatible endpoint, default model `MiniMax-M3.1-Flash` (`MiniMax-M3` also available)
 
 ### インストール
 
@@ -171,7 +171,7 @@ mimi> set_tg_token 123456:ABC...   # Telegram Botトークンを変更
 mimi> set_api_key sk-ant-api03-... # APIキーを変更（AnthropicまたはOpenAI）
 mimi> set_model_provider openai    # プロバイダーを切替（anthropic|openai|minimax）
 mimi> set_model gpt-4o             # LLMモデルを変更
-mimi> set_model MiniMax-M3         # MiniMaxデフォルトモデル（MiniMax-M2.7も選択可）
+mimi> set_model MiniMax-M3.1-Flash # MiniMax default (also: MiniMax-M3)
 mimi> set_minimax_region cn_zh     # MiniMaxリージョン（global_en|cn_zh）
 mimi> set_proxy 127.0.0.1 7897    # HTTPプロキシを設定
 mimi> clear_proxy                  # プロキシを削除

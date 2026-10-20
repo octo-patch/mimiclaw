@@ -16,6 +16,12 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v4
 
+      - name: Test LLM transport on host
+        shell: bash
+        run: |
+          CJSON_DIR="$IDF_PATH/components/json/cJSON" \
+          BUILD_DIR="$RUNNER_TEMP/llm-host-tests" bash tests/host/run.sh
+
       - name: Build firmware (ESP32-S3)
         shell: bash
         run: |
