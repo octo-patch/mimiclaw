@@ -171,15 +171,15 @@ int main(void)
                 assert(llm_proxy_init() == ESP_OK);
                 const char *expected = models[m] ? models[m] :
                     (MIMI_SECRET_MODEL[0] ? MIMI_SECRET_MODEL : "MiniMax-M3.1-Flash");
-                cJSON_Delete(send_request(messages, expected, r == 1 ? "api.minimax.cn" : "api.minimax.io"));
+                cJSON_Delete(send_request(messages, expected, r == 1 ? "api.minimaxi.com" : "api.minimax.io"));
                 assert(llm_set_provider("openai") == ESP_OK);
                 cJSON_Delete(send_request(messages, models[m] || MIMI_SECRET_MODEL[0] ? expected : MIMI_LLM_DEFAULT_MODEL, "api.openai.com"));
                 assert(llm_set_provider("minimax") == ESP_OK);
-                cJSON_Delete(send_request(messages, expected, r == 1 ? "api.minimax.cn" : "api.minimax.io"));
+                cJSON_Delete(send_request(messages, expected, r == 1 ? "api.minimaxi.com" : "api.minimax.io"));
                 assert(llm_set_model("explicit-cli-model") == ESP_OK);
                 llm_set_provider("openai");
                 llm_set_provider("minimax");
-                cJSON_Delete(send_request(messages, "explicit-cli-model", r == 1 ? "api.minimax.cn" : "api.minimax.io"));
+                cJSON_Delete(send_request(messages, "explicit-cli-model", r == 1 ? "api.minimaxi.com" : "api.minimax.io"));
             }
         }
     }
@@ -197,7 +197,7 @@ int main(void)
     response.assistant_message = NULL;
     llm_response_free(&response);
     cJSON_AddItemToArray(messages, cJSON_Parse("{\"role\":\"user\",\"content\":[{\"type\":\"tool_result\",\"tool_use_id\":\"call_1\",\"content\":\"found\"}]}"));
-    cJSON *body = send_request(messages, MIMI_SECRET_MODEL[0] ? MIMI_SECRET_MODEL : "MiniMax-M3.1-Flash", "api.minimax.cn");
+    cJSON *body = send_request(messages, MIMI_SECRET_MODEL[0] ? MIMI_SECRET_MODEL : "MiniMax-M3.1-Flash", "api.minimaxi.com");
     cJSON *sent = cJSON_GetObjectItem(body, "messages");
     assert(cJSON_GetArraySize(sent) == 4);
     assert(cJSON_Compare(cJSON_GetArrayItem(messages, 1), cJSON_GetArrayItem(sent, 2), 1));
@@ -207,7 +207,7 @@ int main(void)
 
     /* Existing block-shaped history and non-MiniMax media must stay intact. */
     messages = cJSON_Parse("[{\"role\":\"assistant\",\"content\":[{\"type\":\"tool_use\",\"id\":\"old_call\",\"name\":\"lookup\",\"input\":{}}]}]");
-    body = send_request(messages, MIMI_SECRET_MODEL[0] ? MIMI_SECRET_MODEL : "MiniMax-M3.1-Flash", "api.minimax.cn");
+    body = send_request(messages, MIMI_SECRET_MODEL[0] ? MIMI_SECRET_MODEL : "MiniMax-M3.1-Flash", "api.minimaxi.com");
     cJSON *assistant = cJSON_GetArrayItem(cJSON_GetObjectItem(body, "messages"), 1);
     assert(cJSON_GetArraySize(cJSON_GetObjectItem(assistant, "tool_calls")) == 1);
     cJSON_Delete(body);

@@ -92,14 +92,14 @@
 #define MIMI_LLM_API_URL             "https://api.anthropic.com/v1/messages"
 #define MIMI_OPENAI_API_URL          "https://api.openai.com/v1/chat/completions"
 /* MiniMax — OpenAI-compatible endpoint. Two regions are available and selected
- * at runtime: "global_en" (api.minimax.io) and "cn_zh" (api.minimax.cn).
+ * at runtime: "global_en" (api.minimax.io) and "cn_zh" (api.minimaxi.com).
  * Default model is MiniMax-M3.1-Flash, with MiniMax-M3 as an alternative. */
 #define MIMI_MINIMAX_DEFAULT_MODEL   "MiniMax-M3.1-Flash"
 #define MIMI_MINIMAX_REGION_DEFAULT  "global_en"
 #define MIMI_MINIMAX_API_URL_GLOBAL  "https://api.minimax.io/v1/chat/completions"
-#define MIMI_MINIMAX_API_URL_CN      "https://api.minimax.cn/v1/chat/completions"
+#define MIMI_MINIMAX_API_URL_CN      "https://api.minimaxi.com/v1/chat/completions"
 #define MIMI_MINIMAX_API_HOST_GLOBAL "api.minimax.io"
-#define MIMI_MINIMAX_API_HOST_CN     "api.minimax.cn"
+#define MIMI_MINIMAX_API_HOST_CN     "api.minimaxi.com"
 #define MIMI_MINIMAX_API_PATH        "/v1/chat/completions"
 #define MIMI_LLM_API_VERSION         "2023-06-01"
 #define MIMI_LLM_STREAM_BUF_SIZE     (32 * 1024)

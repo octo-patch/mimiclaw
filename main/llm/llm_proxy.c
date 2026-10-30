@@ -203,7 +203,7 @@ static bool provider_is_openai_compat(void)
 }
 
 /* MiniMax is reachable through two regional endpoints selected at runtime:
- * "global_en" (api.minimax.io) and "cn_zh" (api.minimax.cn). Any value other
+ * "global_en" (api.minimax.io) and "cn_zh" (api.minimaxi.com). Any value other
  * than "cn_zh" falls back to the global endpoint. */
 static bool minimax_region_is_cn(void)
 {
